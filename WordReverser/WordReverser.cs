@@ -4,7 +4,12 @@ using System.Text.RegularExpressions;
 
 namespace WordReverser
 {
-    public class WordReverser
+    public interface IWordReverser
+    {
+        string ReverseWords(string inputString);
+    }
+    
+    public class WordReverser : IWordReverser
     {
         private static int MAX_LENGTH = 2040;
 
