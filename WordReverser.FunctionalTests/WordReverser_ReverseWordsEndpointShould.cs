@@ -1,6 +1,7 @@
 using System;
 using Xunit;
 using System.Net.Http;
+using System.Text.RegularExpressions;
 
 namespace WordReverser.FunctionalTests
 {
@@ -15,7 +16,15 @@ namespace WordReverser.FunctionalTests
             if (String.IsNullOrEmpty(host)) {
                 throw new ArgumentException("Did you forget to set the $WHOS_THERE_API_HOST environment variable?");
             }
-            HttpClient client = new HttpClient();
+            HttpClient client;
+            var isSecureLocalhost = Regex.Match(host, @"^https://localhost");
+            if (isSecureLocalhost.Success) {
+                var certificateIgnoringHttpClientHandler = new HttpClientHandler();
+                certificateIgnoringHttpClientHandler.ServerCertificateCustomValidationCallback = (message, cert, chain, errors) => { return true; };
+                client = new HttpClient(certificateIgnoringHttpClientHandler);
+            } else {
+                client = new HttpClient();
+            }
             _wordReverser = new WordReverser_HttpClient(client, host);
         }
 
