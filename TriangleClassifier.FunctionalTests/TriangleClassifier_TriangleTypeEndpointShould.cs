@@ -2,30 +2,19 @@ using System;
 using Xunit;
 using System.Net.Http;
 using System.Text.RegularExpressions;
+using Common.FunctionalTests;
 
 namespace TriangleClassifier.FunctionalTests
 {
-    public class TriangleClassifier_TriangleTypeEndpointShould
+    public class TriangleClassifier_TriangleTypeEndpointShould : EndpointTest
     {
 
         private readonly ITriangleClassifier_HttpClient _triangleClassifier;
 
-        public TriangleClassifier_TriangleTypeEndpointShould()
+        public TriangleClassifier_TriangleTypeEndpointShould() :
+            base()
         {
-            string host = Environment.GetEnvironmentVariable("WHOS_THERE_API_HOST");
-            if (String.IsNullOrEmpty(host)) {
-                throw new ArgumentException("Did you forget to set the $WHOS_THERE_API_HOST environment variable?");
-            }
-            HttpClient client;
-            var isSecureLocalhost = Regex.Match(host, @"^https://localhost");
-            if (isSecureLocalhost.Success) {
-                var certificateIgnoringHttpClientHandler = new HttpClientHandler();
-                certificateIgnoringHttpClientHandler.ServerCertificateCustomValidationCallback = (message, cert, chain, errors) => { return true; };
-                client = new HttpClient(certificateIgnoringHttpClientHandler);
-            } else {
-                client = new HttpClient();
-            }
-            _triangleClassifier = new TriangleClassifier_HttpClient(client, host);
+            _triangleClassifier = new TriangleClassifier_HttpClient(_client, _host);
         }
 
         [Fact]

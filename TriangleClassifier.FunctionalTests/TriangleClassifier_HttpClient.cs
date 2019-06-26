@@ -3,6 +3,7 @@ using System.Threading.Tasks;
 using System.Net.Http;
 using System.Net.Http.Headers;
 using System.Web;
+using Common.FunctionalTests;
 
 namespace TriangleClassifier.FunctionalTests
 {
@@ -10,24 +11,16 @@ namespace TriangleClassifier.FunctionalTests
         Task<(string StatusCode, string Content)> TriangleType(Object a, Object b, Object c);
     }
 
-    public class TriangleClassifier_HttpClient : ITriangleClassifier_HttpClient
+    public class TriangleClassifier_HttpClient : Endpoint_HttpClient, ITriangleClassifier_HttpClient
     {
 
-        private readonly HttpClient _client;
-        private readonly string _hostAddress;
-
-        public TriangleClassifier_HttpClient(HttpClient client, string hostAddress)
+        public TriangleClassifier_HttpClient(HttpClient client, string hostAddress) :
+            base(client, hostAddress)
         {
-            _client = client;
-            _hostAddress = hostAddress;
         }
 
         public async Task<(string StatusCode, string Content)> TriangleType(Object a, Object b, Object c)
         {
-            _client.DefaultRequestHeaders.Accept.Clear();
-            _client.DefaultRequestHeaders.Accept.Add(
-                    new MediaTypeWithQualityHeaderValue("application/json"));
-
             var query = HttpUtility.ParseQueryString(string.Empty);
             query["a"] = a.ToString();
             query["b"] = b.ToString();
@@ -38,14 +31,7 @@ namespace TriangleClassifier.FunctionalTests
             ub.Path = "/api/TriangleType";
             ub.Query = queryString;
 
-            Console.WriteLine("requesting: " + ub.ToString());
-            HttpResponseMessage response =  await _client.GetAsync(ub.Uri);
-            Console.WriteLine("response: " + response.ToString());
-
-            var statusCode = response.StatusCode.ToString("D");
-            var content = await response.Content.ReadAsStringAsync();
-
-            return (statusCode, content);
+            return await base.GetAsync(ub);
         }
     }
 }
