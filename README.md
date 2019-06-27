@@ -20,6 +20,6 @@ Since the reference endpoints are essentially black boxes with respect to bounda
 
 To make this a more polished solution:
 
-- Implement an API Gateway and service discovery (investigate (Steeltoe)[https://steeltoe.io/docs/steeltoe-discovery/])
+- Implement an API Gateway and service discovery (investigate [Steeltoe](https://steeltoe.io/docs/steeltoe-discovery))
 - Add autogeneration for Swagger/OpenAPI specs
 - One-click-deploy for local and remote instances
